@@ -1,5 +1,8 @@
 import React,{ useState,useEffect } from 'react'
 import moment from 'moment';
+import jobs from '../data/jobs.json';
+import filters from "../data/filters.json";
+
 const Index = ({ jobs,filters})=>{
   const [showJob, setShowJob] = useState([])
   const [jobsData, setJobsData] = useState(jobs)
@@ -317,12 +320,12 @@ const Index = ({ jobs,filters})=>{
   export async function getStaticProps() {
     // Call an external API endpoint to get jobs.
     // You can use any data fetching library
-    const res = await fetch('http://localhost:3000/api/jobs?sort=asc')
+    /*const res = await fetch('http://localhost:3000/api/jobs?sort=asc')
     const res2 = await fetch('http://localhost:3000/api/filters')
     const job = await res.json()
     const jobs = job.jobs
-    const filters = await res2.json()
-  
+    const filters = await res2.json()*/
+    
     return {
       props: {
         jobs,
