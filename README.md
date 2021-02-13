@@ -1,5 +1,7 @@
 # fullstack-candidate-testing
 
+    <img alt="Sample View" src="screenshots/sampleview.gif" width="160" />
+
 ## Instructions
 
 
