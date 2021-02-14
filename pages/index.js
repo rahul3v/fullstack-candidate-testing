@@ -14,6 +14,7 @@ const Index = ({ jobs,filters})=>{
   const [showFilterText, setShowFilterText] = useState([])
   const [showSearch, setShowSearch] = useState("")
   const [model,setModel]=useState(false)
+  const [modelKey,setModelKey]=useState("")
   const [totalJob,setTotalJob]=useState(0)
   
 // number format logic
@@ -150,12 +151,12 @@ const Index = ({ jobs,filters})=>{
          </div>
       </div>
       <div style={{boxShadow:'0 0 4px #fff4',display:"flex",flexWrap:"wrap"}}>
-      <div className="showFilters mobile" style={{width:"300px",marginRight:"20px",flexGrow:"1"}}>
+      <div className="showFilters mobile">
       {Object.keys(filters).map(key=>{
           return (
               <>
-              <div style={{boxShadow:'0 0 4px rgba(0,0,0,0.1)',background:"white",padding:"15px",borderRadius:"5px"}}>
-              <h1 onClick={()=>setModel(true)}><b>{key.replace('_'," ").toUpperCase()}</b></h1>
+              <div>
+              <h1 onClick={(e)=>{setModelKey(e.target.innerText.toLowerCase().replace(' ',"_")),setModel(true)}}><b>{key.replace('_'," ").toUpperCase()}</b></h1>
               <div className="filterText" onClick={(e)=>{
                       if(e.target.tagName!="A")return;
                       e.target.classList.toggle("active");
@@ -172,7 +173,6 @@ const Index = ({ jobs,filters})=>{
                 ))}
              </div>
              </div>
-             <br/>
             </>
         )
       })
@@ -279,11 +279,11 @@ const Index = ({ jobs,filters})=>{
         <div className="modal-box">
         <div className="modal">
           <div className="sticky">
-          <h1>Department</h1>
+          <h1>{modelKey.replace('_'," ").toUpperCase()}</h1>
           <span className="close" onClick={()=>setModel(false)}>&times;</span>
           </div>
           <ul className="modelData">
-                  {filterData['department'].map((job) => (
+                  {filterData[modelKey] && filterData[modelKey].map((job) => (
                       <li>{job.key} 
                           <span style={{color:"rgba(0,0,0,0.6)",padding:"0 8px",fontSize:'12px'}}>{numFormat(job.doc_count)}</span>
                       </li>
@@ -312,10 +312,11 @@ const Index = ({ jobs,filters})=>{
     </>
     )
   }
+
   const foot={
-    AboutUs:["We are a team of nurses, doctors, technologists and executives dedicatedto help nurses find jobs that they love","All copyrights reserved @ 2020 - Helth Explorer"],
-    SiteMap:["Nurses","Employers","Social Networking","Jobs"],
-    Privacy:["Terms of Use","Privacy policy","Cookie Policy"]
+    "About Us":["We are a team of nurses, doctors, technologists and executives dedicatedto help nurses find jobs that they love","All copyrights reserved @ 2020 - Helth Explorer"],
+    "Sitemap":["Nurses","Employers","Social Networking","Jobs"],
+    "Privacy":["Terms of Use","Privacy policy","Cookie Policy"]
 }
   export async function getStaticProps() {
     // Call an external API endpoint to get jobs.
