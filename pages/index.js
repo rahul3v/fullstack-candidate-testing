@@ -25,28 +25,24 @@ const Index = ({ jobs,filters})=>{
   useEffect(()=>{
     //let sortedData=[...jobsData];
     let sortedData=[...jobsFilterData];
-    if(showSort.toLowerCase()=="asc"){
-      sortedData.sort((a,b)=>{
-        return a.name>b.name
-      })
+    let i=0;
+    if(showSort.toLowerCase()=="asc")i=1
+    if(showSort.toLowerCase()=="des")i=-1
+    if(i){
+      sortedData.sort((a,b)=>a.name>b.name?1*i:-1*i)
       setJobsFilterData(sortedData)
       return;
     }
-    if(showSort.toLowerCase()=="des"){
-      sortedData.sort((a,b)=>{
-        return a.name<b.name
-      })
-      setJobsFilterData(sortedData)
-    }
     //console.log(jobsData);
-  },[showJob,showSort])
+  },[showSort,jobsFilterData])
 
   //Filter logic
   useEffect(()=>{
     let newData =[];
     let total=0;
     
-    if(!showFilterText.length){setJobsFilterData(jobsData);
+    if(!showFilterText.length){
+      if(jobsFilterData.length<jobsData.length)setJobsFilterData(jobsData);
       jobsData.map((job,i)=>{
         total=total+job.total_jobs_in_hospital*1
       })
@@ -57,19 +53,16 @@ const Index = ({ jobs,filters})=>{
     let filterText=showFilterText;
     jobsData.map((job,i)=>{
       let myfilter=job.items.filter((item)=>{
-         let selectIt=false
-         showFilter.map((filterType,i)=>{
+         return showFilter.every((filterType)=>{
             filterType=filterType.toLowerCase()
             let fText;
             if(filterText.length>1)fText=filterText.join("|")
             else {fText=filterText[0]}
             fText=fText?fText.toLowerCase():"";
-          
-            if(new RegExp(fText).test((item[filterType]+"").toLowerCase())){
-            selectIt=true
-          }
+            if(!filterData[filterType]||!filterData[filterType].some((typeData)=>{return new RegExp(typeData.key.toLowerCase()).test(fText)}))return true
+            if(new RegExp(fText).test((item[filterType]+"").toLowerCase())){return true}
+            return false
          })
-         return selectIt
       })
       if(myfilter.length){
         total+=myfilter.length
@@ -143,8 +136,8 @@ const Index = ({ jobs,filters})=>{
          <div className="searchData">
            {showSearch && searchData.length?searchData.map((job,i) => (
             <div className="miniJob">
-               <a data-key={i} onClick={(e)=>{}}>
-                <img src="#abc" alt={job.name.slice(0,2).toUpperCase()}/>
+              <a data-key={i} onClick={(e)=>{}}>
+                <div className="imgbox">{job.name.slice(0,2).toUpperCase()}</div>
                 <div><span>{job.total_jobs_in_hospital}</span> jobs for {job.name}</div>
               </a>
             </div>)):"No Data Found !"}
@@ -225,7 +218,7 @@ const Index = ({ jobs,filters})=>{
                 }
 
               }}>
-                <img src="#abc" alt={job.name.slice(0,2).toUpperCase()}/>
+                <div className="imgbox">{job.name.slice(0,2).toUpperCase()}</div>
                 <div><span>{job.total_jobs_in_hospital}</span> jobs for {job.name}</div>
               </a>
               <div className="miniJobData">

@@ -70,6 +70,7 @@ nav>*{
     position: relative;
 }
 input{padding:10px;width:100%}
+input:focus{border:none;outline:none;}
 .searchBar>.searchData{
     position: absolute;
     width:100%;
@@ -195,7 +196,7 @@ footer h1{
 	display: flex;
 	align-items: center;
 }
-.miniJob img{
+.miniJob .imgbox{
 	border-radius: 5px;
 	min-width: 40px;
 	height: 40px;
