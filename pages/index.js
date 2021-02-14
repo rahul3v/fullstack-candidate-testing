@@ -21,20 +21,26 @@ const Index = ({ jobs,filters})=>{
  function numFormat(num){
   return num.toString().split('').reverse().join("").replace(/(...)/g,"$1,").split('').reverse().join("").replace(/(^,)/,"")
  }
+ 
  //sort logic
+ const sortFun=(data,order)=>{
+  let i=0;
+  order=order?order.toLowerCase():'';
+  if(order=="asc")i=1
+  if(order=="des")i=-1
+  if(i){
+    let sortedData=[...data];
+    sortedData.sort((a,b)=>a.name>b.name?1*i:-1*i)
+    return sortedData;
+  }
+   return null;
+ }
+
   useEffect(()=>{
-    //let sortedData=[...jobsData];
-    let sortedData=[...jobsFilterData];
-    let i=0;
-    if(showSort.toLowerCase()=="asc")i=1
-    if(showSort.toLowerCase()=="des")i=-1
-    if(i){
-      sortedData.sort((a,b)=>a.name>b.name?1*i:-1*i)
-      setJobsFilterData(sortedData)
-      return;
-    }
+    let sortedData=sortFun(jobsFilterData,showSort)
+    if(sortedData)setJobsFilterData(sortedData)
     //console.log(jobsData);
-  },[showSort,jobsFilterData])
+  },[showSort])
 
   //Filter logic
   useEffect(()=>{
@@ -42,7 +48,10 @@ const Index = ({ jobs,filters})=>{
     let total=0;
     
     if(!showFilterText.length){
-      if(jobsFilterData.length<jobsData.length)setJobsFilterData(jobsData);
+      if(jobsFilterData.length<jobsData.length){
+        let sortedData=sortFun(jobsData,showSort)
+        if(sortedData)setJobsFilterData(sortedData)
+      }
       jobsData.map((job,i)=>{
         total=total+job.total_jobs_in_hospital*1
       })
@@ -74,7 +83,8 @@ const Index = ({ jobs,filters})=>{
         newData.push(mykeys)
       }
     })
-    setJobsFilterData(newData)
+    let sortedData=sortFun(newData,showSort)
+    if(sortedData)setJobsFilterData(sortedData)
     setTotalJob(total)
     console.log(showFilter)
     console.log(showFilterText)
