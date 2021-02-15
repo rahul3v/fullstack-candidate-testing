@@ -3,6 +3,25 @@ import moment from 'moment';
 import jobs from '../data/jobs.json';
 import filters from "../data/filters.json";
 
+// number format logic
+export function numFormat(num){
+  return num.toString().split('').reverse().join("").replace(/(...)/g,"$1,").split('').reverse().join("").replace(/(^,)/,"")
+}
+ 
+ //sort logic
+export const sortFun=(data,order)=>{
+  let i=0;
+  order=order?order.toLowerCase():'';
+  if(order=="asc")i=1
+  if(order=="des")i=-1
+  if(i){
+    let sortedData=[...data];
+    sortedData.sort((a,b)=>a.name>b.name?1*i:-1*i)
+    return sortedData;
+  }
+   return null;
+}
+
 const Index = ({ jobs,filters})=>{
   const [showJob, setShowJob] = useState([])
   const [jobsData, setJobsData] = useState(jobs)
@@ -16,25 +35,6 @@ const Index = ({ jobs,filters})=>{
   const [model,setModel]=useState(false)
   const [modelKey,setModelKey]=useState("")
   const [totalJob,setTotalJob]=useState(0)
-  
-// number format logic
- function numFormat(num){
-  return num.toString().split('').reverse().join("").replace(/(...)/g,"$1,").split('').reverse().join("").replace(/(^,)/,"")
- }
- 
- //sort logic
- const sortFun=(data,order)=>{
-  let i=0;
-  order=order?order.toLowerCase():'';
-  if(order=="asc")i=1
-  if(order=="des")i=-1
-  if(i){
-    let sortedData=[...data];
-    sortedData.sort((a,b)=>a.name>b.name?1*i:-1*i)
-    return sortedData;
-  }
-   return null;
- }
 
   useEffect(()=>{
     let sortedData=sortFun(jobsFilterData,showSort)
