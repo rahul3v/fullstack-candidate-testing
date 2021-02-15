@@ -4,12 +4,12 @@ export default async (req, res) => {
   res.statusCode = 200
   let searchText=req.query.search||"";
   searchText=searchText.trim()
-
   let filterText=req.query.filter||"";
   filterText=filterText.trim().toLowerCase()
   let filterType=req.query.type||"";
   filterType=filterType.trim().replace(" ","_").toLowerCase()
-  console.log(searchText+" ::: "+filterText+">>>"+filterType)
+  //console.log(searchText+" ::: "+filterText+">>>"+filterType)
+  if(searchText.length>300 || filterText.length>300 || filterType.length>300){res.json({jobs:[]})}
   let newJobs=jobs
   //Search within Jobs
     if(searchText){

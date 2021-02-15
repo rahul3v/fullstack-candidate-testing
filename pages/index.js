@@ -85,6 +85,7 @@ const Index = ({ jobs,filters})=>{
     })
     let sortedData=sortFun(newData,showSort)
     if(sortedData)setJobsFilterData(sortedData)
+    else setJobsFilterData(newData)
     setTotalJob(total)
     console.log(showFilter)
     console.log(showFilterText)
@@ -92,23 +93,35 @@ const Index = ({ jobs,filters})=>{
 
   //offline Search job logic
   useEffect(()=>{
-    let filters=showSearch.match(/(location|department|experience|jobtype):(asc|des|none)/ig);
-    let searches=showSearch.replace(/\w{1,20}:(asc|dec|none)/ig,"").match(/\w{1,20}/ig);
+    let filters=showSearch.toLowerCase().match(/(location|department|experience|jobtype):(asc|des|none)/ig);
+    let searches=showSearch.toLowerCase().replace(/\w{1,20}:(asc|dec|none)/ig,"").match(/\w{1,20}/ig);
     console.log(filters)
     console.log(searches)
-    let newJobs=jobsData.filter((job)=>{
-      return job.name.toLowerCase().indexOf(searches) > -1
-    })
-    setSearchData(newJobs)
-    //To fetch data searched data directly from server
-    //fetchJobs(setSearchData)
+    console.log("online :"+navigator.onLine)
+    if(navigator.onLine){
+      //To fetch searched data directly from server
+      showSearch && fetchJobs(setSearchData,showSearch)
+    }else{
+      let newJobs=jobsData.filter((job,i)=>{
+        //get all the values of a every job in a hospital to make a search query
+        /*let jdata=[job.name,job.job_title];
+        job.items.map((data)=>{
+          jdata=[...jdata,Object.values(data)]
+        })
+        console.log(jdata.toString())
+        //return jdata.toString().toLowerCase().indexOf(searches) > -1
+        */
+        return job.name.toLowerCase().indexOf(searches) > -1
+      })
+      setSearchData(newJobs)
+    }
   },[showSearch])
     return (
     <>
       <nav>
         <div className="navStart">
           <a className="navicon" onClick={()=>{}}>☰</a>
-          <a style={{color:"#4f9afb"}} href="#"><h1>HEALTH EXPLORER</h1></a>
+          <a className="nowrap" style={{color:"#4f9afb"}} href="#"><h1>HEALTH EXPLORER</h1></a>
         </div>
         <div className="navCenter mobile flex">
             <a>PROFILE</a>
@@ -339,8 +352,8 @@ const Index = ({ jobs,filters})=>{
   }
   
   //Client-Side dataFetch
-  async function fetchJobs(updateJobs) {
-    const res = await fetch('http://localhost:3000/api/jobs?sort=des')
+  async function fetchJobs(updateJobs,showSearch) {
+    const res = await fetch(`/api/jobs?search=${showSearch.toLowerCase()}`)
     const job = await res.json()
     const jobs = job.jobs
     updateJobs(jobs)

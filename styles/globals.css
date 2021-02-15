@@ -298,6 +298,9 @@ footer h1{
     top: -3px;
     display:none;
 }
+.nowrap{
+    white-space: nowrap;
+}
 /*RWD*/
 .mobile{display:block}
 .mobile.flex{display:flex}
